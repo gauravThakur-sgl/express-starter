@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import { entriesRouter } from "./src/routes/entries.route";
 import dotenv from "dotenv";
+import userRouter from "./src/routes/userRoute";
 dotenv.config();
 const app = express();
 
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/entries", entriesRouter);
+app.use("/api/users", userRouter);
 app.use("/static", express.static(path.join(__dirname, "public")));
 
 app.listen(port, () => {
