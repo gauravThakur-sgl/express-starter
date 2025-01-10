@@ -1,4 +1,4 @@
-import { getEntries, createEntry } from "../services/entries.service";
+const { getEntries, createEntry } = require("../services/entries.service");
 import { Request, Response, NextFunction } from "express";
 
 async function get(req: Request, res: Response, next: NextFunction) {

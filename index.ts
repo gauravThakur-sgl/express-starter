@@ -1,10 +1,13 @@
-import express from "express";
-import path from "path";
-import mongoose from "mongoose";
-import cors from "cors";
-import { entriesRouter } from "./src/routes/entries.route";
-import dotenv from "dotenv";
-import userRouter from "./src/routes/userRoute";
+const express = require("express");
+import { Request, Response } from "express";
+const path = require("path");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const entriesRouter = require("./src/routes/entries.route").default;
+const dotenv = require("dotenv");
+const userRouter = require("./src/routes/userRoute").default;
+// import userRouter from "./src/routes/userRoute";
+
 dotenv.config();
 const app = express();
 
@@ -21,12 +24,12 @@ app.use(
 //connect database
 const mongoUri = process.env.MONGODB_URI;
 if (mongoUri) {
- mongoose.connect(mongoUri).catch((err) => console.log(err));
+ mongoose.connect(mongoUri).catch((err: any) => console.log(err));
 } else {
  console.error("MONGODB_URI is not defined in the environment variables");
 }
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
  res.json({ message: "Hello World" });
 });
 

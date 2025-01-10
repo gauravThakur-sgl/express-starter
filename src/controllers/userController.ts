@@ -1,7 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../models/user";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+import {
+ signup as signupService,
+ login as loginService,
+ logout as logoutService,
+ checkAuth as checkAuthService,
+} from "../services/user.service";
 
 interface SignupRequest extends Request {
  body: {
@@ -25,47 +31,8 @@ export const signup = async (
  next: NextFunction
 ) => {
  try {
-  const {
-   email,
-   password,
-   firstName,
-   middleName,
-   lastName,
-   dateOfBirth,
-   bio,
-   links,
-   font,
-   theme,
-   activeModules,
-  } = req.body;
-  const hashedPassword = bcrypt.hashSync(password, 10);
-  await User.create({
-   email,
-   password: hashedPassword,
-   firstName,
-   middleName,
-   lastName,
-   dateOfBirth,
-   bio,
-   links,
-   font,
-   theme,
-   activeModules,
-  });
-  res.status(200).json({
-   message: "User created successfully",
-   email,
-   password: hashedPassword,
-   firstName,
-   middleName,
-   lastName,
-   dateOfBirth,
-   bio,
-   links,
-   font,
-   theme,
-   activeModules,
-  });
+  const newUser = await signupService(req.body);
+  res.status(200).json(newUser);
  } catch (error: any) {
   console.error(`Error while saving user`, error.message);
   next(error);
@@ -83,29 +50,10 @@ interface LoginRequest extends Request {
 export const login = async (req: LoginRequest, res: Response) => {
  try {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) {
-   res.status(400).json({ message: "User not found" });
-   return;
-  }
-
-  //   compairing the password
-  const passwordMatch = bcrypt.compareSync(password, user.password);
-  if (!passwordMatch) {
-   res.status(401).json({ message: "Invalid password" });
-   return;
-  }
-  // Creating a token
-  const exp = Date.now() + 1000 * 60 * 30;
-  if (!process.env.JWT_SECRET) {
-   throw new Error("JWT_SECRET is not defined");
-  }
-
-  const token = jwt.sign({ sub: user._id, exp }, process.env.JWT_SECRET);
-
+  const { user, token, exp } = await loginService(email, password);
   // Setting the Cookie
   res.cookie("token", token, {
-   expires: new Date(exp),
+   expires: new Date(exp * 1000),
    httpOnly: true,
    sameSite: "lax",
    secure: process.env.Node_ENV === "production",
@@ -120,6 +68,7 @@ export const login = async (req: LoginRequest, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
  try {
+  logoutService();
   res.clearCookie("token");
   res.status(200).json({ message: "Logged out successfully" });
  } catch (error: any) {
