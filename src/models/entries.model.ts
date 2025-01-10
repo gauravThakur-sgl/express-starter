@@ -1,6 +1,7 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
+import { IEntry } from "../interfaces/interface";
 
-const entrySchema = new mongoose.Schema(
+const entrySchema = new Schema<IEntry>(
   {
     name: { type: String, required: true },
     nickname: { type: String, required: true },
@@ -21,4 +22,4 @@ const entrySchema = new mongoose.Schema(
   { versionKey: false, autoIndex: true }
 );
 
-module.exports = mongoose.model("Entry", entrySchema);
+export default model("Entry", entrySchema);
