@@ -6,6 +6,12 @@ const eventSchema = new Schema<IEvent>({
   type: String,
   required: true,
   maxLength: 20,
+  validate: {
+   validator: function (v: string) {
+    return /^[a-zA-Z0-9][a-zA-Z0-9\s]*$/.test(v);
+   },
+   message: (props: any) => `${props.value} is not a valid title `,
+  },
  },
  description: {
   type: String,
@@ -56,6 +62,8 @@ const eventSchema = new Schema<IEvent>({
   type: Number,
   required: true,
  },
+
+ 
 });
 
 export const Event = model<IEvent>("Event", eventSchema);

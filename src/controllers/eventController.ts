@@ -13,6 +13,6 @@ export const createEvent = async (req: AuthenticatedRequest, res: Response) => {
   const newEvent = await createEventService(req.body, userId);
   res.status(200).json(newEvent);
  } catch (error: any) {
-  console.error(`Error while saving event`, error.message);
+  res.json(`Validation failed: ${error.message}`);
  }
 };
