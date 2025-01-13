@@ -6,6 +6,7 @@ const cors = require("cors");
 const entriesRouter = require("./src/routes/entries.route").default;
 const dotenv = require("dotenv");
 const userRouter = require("./src/routes/userRoute").default;
+const eventRouter = require("./src/routes/eventRoute").default;
 // import userRouter from "./src/routes/userRoute";
 
 dotenv.config();
@@ -35,6 +36,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/entries", entriesRouter);
 app.use("/api/users", userRouter);
+app.use("/api/events", eventRouter);
 app.use("/static", express.static(path.join(__dirname, "public")));
 
 app.listen(port, () => {

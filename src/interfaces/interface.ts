@@ -29,9 +29,9 @@ export interface IEvent {
  id: string;
  title: string;
  description: string;
- date: Date;
- startDate: Date;
- endDate: Date;
+ date: string;
+ startDate: string;
+ endDate: string;
  location: string;
  isDone: boolean;
  isImportant: boolean;
