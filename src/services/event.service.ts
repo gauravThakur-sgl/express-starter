@@ -11,10 +11,11 @@ export const createEvent = async (eventData: IEvent, userId: string) => {
   return newEvent.toJSON();
  } catch (error: any) {
   if (error.name === "ValidationError") {
-   const errors = Object.values(error.errors).map(
-    (error: any) => error.message
-   );
-   throw new Error(` ${errors.join(", ")}`);
+   const errors: { [key: string]: string } = {};
+   Object.keys(error.errors).forEach((key) => {
+    errors[key] = error.errors[key].message;
+   });
+   throw new Error(JSON.stringify(errors));
   }
   throw new Error(`Error creating event: ${error.message}`);
  }
