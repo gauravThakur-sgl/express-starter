@@ -24,3 +24,20 @@ export interface IUser {
  theme: string;
  activeModules: string[];
 }
+
+export interface IEvent {
+ id: string;
+ title: string;
+ description: string;
+ date: Date;
+ startDate: Date;
+ endDate: Date;
+ location: string;
+ isDone: boolean;
+ isImportant: boolean;
+ isWork: boolean;
+ isPersonal: boolean;
+ users: string[];
+ user_id: string;
+ event_type: number;
+}
