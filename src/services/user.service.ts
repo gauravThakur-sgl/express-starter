@@ -4,13 +4,23 @@ import { User } from "../models/user";
 const jwt = require("jsonwebtoken");
 
 export const signup = async (userData: IUser) => {
- const { password, ...rest } = userData;
- const hashedPassword = bcrypt.hashSync(password, 10);
- const newUser = await User.create({
-  ...rest,
-  password: hashedPassword,
- });
- return newUser;
+ try {
+  const { password, ...rest } = userData;
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  const newUser = await User.create({
+   ...rest,
+   password: hashedPassword,
+  });
+  return newUser;
+ } catch (error: any) {
+  if (error.name === "ValidationError") {
+   const errors = Object.values(error.errors).map(
+    (error: any) => error.message
+   );
+   throw new Error(` ${errors.join(", ")}`);
+  }
+  throw new Error(error.message);
+ }
 };
 
 export const login = async (email: string, password: string) => {
