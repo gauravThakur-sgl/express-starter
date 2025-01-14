@@ -13,7 +13,7 @@ export const signup = async (userData: IUser) => {
    throw new Error(JSON.stringify("User already exists"));
   }
 
-  // valitating the email
+  // validating the email
   const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
   if (!emailRegex.test(rest.email)) {
    throw new Error(JSON.stringify({ email: "Invalid email" }));
@@ -58,7 +58,7 @@ export const login = async (email: string, password: string) => {
   }
   const exp = Math.floor(Date.now() / 1000) + 60 * 30;
   if (!process.env.JWT_SECRET) {
-   throw new Error(JSON.stringify({ message: "Server down" }));
+   throw new Error(JSON.stringify({ message: "Internal server error" }));
   }
   const token = jwt.sign({ sub: user.id, exp }, process.env.JWT_SECRET);
   return { user, token, exp };
