@@ -10,9 +10,17 @@ export const createEvent = async (req: AuthenticatedRequest, res: Response) => {
  try {
   const userId = req.user.id;
   const newEvent = await createEventService(req.body, userId);
-  res.status(200).json(newEvent);
+  res
+   .status(200)
+   .json({
+    status: true,
+    message: "event created successfully",
+    data: newEvent,
+   });
  } catch (error: any) {
-  const errors = JSON.parse(error.message);
-  res.status(400).json(errors);
+  const errors = JSON.parse(
+   JSON.stringify({ status: false, message: error.message })
+  );
+  res.status(400).json({ status: false, message: errors });
  }
 };
