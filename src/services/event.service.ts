@@ -13,10 +13,10 @@ export const createEvent = async (eventData: IEvent, userId: string) => {
   if (error.name === "ValidationError") {
    const errors: { [key: string]: string } = {};
    Object.keys(error.errors).forEach((key) => {
-    errors[key] = error.errors[key].message;
+    errors[key] = error.errors[key].message.replace("Path", "").trim();
    });
    throw new Error(JSON.stringify(errors));
   }
-  throw new Error(`Error saving event: ${error.message}`);
+  throw new Error(error.message);
  }
 };
