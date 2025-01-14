@@ -6,6 +6,26 @@ const jwt = require("jsonwebtoken");
 export const signup = async (userData: IUser) => {
  try {
   const { password, ...rest } = userData;
+
+  // Check if user already exists
+  const isUserExist = await User.findOne({ email: rest.email });
+  if (isUserExist) {
+   throw new Error("User already exists");
+  }
+
+  // valitating hthe email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(rest.email)) {
+   throw new Error("Invalid email format");
+  }
+
+  // Validating the password
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+  if (!passwordRegex.test(password)) {
+   throw new Error(
+    "password must contain at least 8 characters, one uppercase, one lowercase, one number and one special case character"
+   );
+  }
   const hashedPassword = bcrypt.hashSync(password, 10);
   const newUser = await User.create({
    ...rest,
@@ -42,18 +62,4 @@ export const login = async (email: string, password: string) => {
 
 export const logout = () => {
  return;
-};
-
-export const checkAuth = async (token: string) => {
- if (!process.env.JWT_SECRET) {
-  throw new Error("JWT_SECRET is not defined");
- }
- const decoded = jwt.verify(token, process.env.JWT_SECRET) as {
-  sub: string;
-  exp: number;
- };
- if (Date.now() > decoded.exp * 1000) {
-  throw new Error("Token Expired");
- }
- return decoded.sub;
 };
