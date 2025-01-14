@@ -64,9 +64,13 @@ export const login = async (req: LoginRequest, res: Response) => {
   });
 
   res.status(200).json({ message: "User Successfully logged in" });
- } catch (error) {
-  console.log(error);
-  res.status(401).json({ message: "login failed" });
+ } catch (error: any) {
+  try {
+   const errors = JSON.parse(error.message);
+   res.status(401).json(errors);
+  } catch (parseError) {
+   res.status(401).json({ message: error.message });
+  }
  }
 };
 

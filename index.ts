@@ -27,7 +27,7 @@ const mongoUri = process.env.MONGODB_URI;
 if (mongoUri) {
  mongoose.connect(mongoUri).catch((err: any) => console.log(err));
 } else {
- console.error("MONGODB_URI is not defined in the environment variables");
+ console.log("Error occured while connecting to database");
 }
 
 app.get("/", (req: Request, res: Response) => {

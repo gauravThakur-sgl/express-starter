@@ -20,17 +20,15 @@ export const requireAuth = async (
   const decoded = jwt.verify(token, process.env.JWT_SECRET) as DecodedToken;
 
   if (Date.now() > decoded.exp * 1000) {
-   
    return res.sendStatus(401).json({ message: "Token Expired" });
   }
 
   const user = await User.findById(decoded.sub);
   if (!user) {
-   
    return res.sendStatus(401).json({ message: "User not Found" });
+  } else {
+   req.user = user;
   }
-
-  Object.assign(req, { user: { id: user._id.toString() } });
 
   next();
  } catch (error: any) {
