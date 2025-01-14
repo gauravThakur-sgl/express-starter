@@ -13,7 +13,7 @@ export const signup = async (userData: IUser) => {
    throw new Error("User already exists");
   }
 
-  // valitating hthe email
+  // valitating the email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(rest.email)) {
    throw new Error("Invalid email format");
