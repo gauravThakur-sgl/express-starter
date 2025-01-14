@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from "express";
-import { User } from "../models/user";
+import { Request, Response } from "express";
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 import {
@@ -24,11 +23,7 @@ interface SignupRequest extends Request {
  };
 }
 
-export const signup = async (
- req: SignupRequest,
- res: Response,
- next: NextFunction
-) => {
+export const signup = async (req: SignupRequest, res: Response) => {
  try {
   const newUser = await signupService(req.body);
   res.status(200).json(newUser);
@@ -38,7 +33,7 @@ export const signup = async (
    const errors = JSON.parse(error.message);
    res.status(400).json(errors);
   } catch (parseError) {
-   res.status(400).json({ message: error.message });
+   res.status(400).json(error.message);
   }
  }
 };
@@ -54,7 +49,7 @@ interface LoginRequest extends Request {
 export const login = async (req: LoginRequest, res: Response) => {
  try {
   const { email, password } = req.body;
-  const { user, token, exp } = await loginService(email, password);
+  const { token, exp } = await loginService(email, password);
   // Setting the Cookie
   res.cookie("token", token, {
    expires: new Date(exp * 1000),
@@ -65,12 +60,8 @@ export const login = async (req: LoginRequest, res: Response) => {
 
   res.status(200).json({ message: "User Successfully logged in" });
  } catch (error: any) {
-  try {
-   const errors = JSON.parse(error.message);
-   res.status(401).json(errors);
-  } catch (parseError) {
-   res.status(401).json({ message: error.message });
-  }
+  const errors = JSON.parse(error.message);
+  res.status(400).json(errors);
  }
 };
 

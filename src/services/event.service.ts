@@ -12,7 +12,6 @@ export const createEvent = async (eventData: IEvent, userId: string) => {
  } catch (error: any) {
   if (error.name === "ValidationError") {
    const errors: { [key: string]: string } = {};
-   console.log("Errors-List", error.errors);
    Object.keys(error.errors).forEach((key) => {
     errors[key] = error.errors[key].message;
    });
